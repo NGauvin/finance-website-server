@@ -1,10 +1,24 @@
 const express = require("express");
 const cors = require("cors");
+const multer = require("multer");
+const Joi = require("joi");
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(express.static("public"));
+app.use(express.json());
 app.use(cors());
+
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, "./public/images/");
+    },
+    filename: (req, file, cb) => {
+        cb(null, file.originalname);
+    },
+});
+
+const upload = multer({ storage: storage });
 
 let assets = [
     {
@@ -92,6 +106,50 @@ let assets = [
 app.get("/api/assets", (req, res) => {
     res.send(assets);
 });
+
+app.post("/api/assets", upload.single("img"), (req, res) => {
+    const result = validateAsset(req.body);
+
+    if (result.error) {
+        console.log("Error in validation");
+        res.status(400).send(result.error.details[0].message);
+        return;
+    }
+
+    if (!req.file) {
+        res.status(400).send("An image is required");
+        return;
+    }
+
+    const asset = {
+        _id: assets.length + 1,
+        name: req.body.name,
+        img_name: req.file.filename,
+        category: req.body.category,
+        risk: req.body.risk,
+        typical_return: req.body.typical_return,
+        liquidity: req.body.liquidity,
+        description: req.body.description
+    };
+
+    assets.push(asset);
+
+    res.status(200).send(asset);
+});
+
+const validateAsset = (asset) => {
+    const schema = Joi.object({
+        _id: Joi.allow(""),
+        name: Joi.string().min(3).max(40).required(),
+        category: Joi.string().min(3).max(40).required(),
+        risk: Joi.string().min(3).max(20).required(),
+        typical_return: Joi.string().min(2).max(20).required(),
+        liquidity: Joi.string().min(3).max(20).required(),
+        description: Joi.string().min(10).max(300).required()
+    });
+
+    return schema.validate(asset);
+};
 
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);

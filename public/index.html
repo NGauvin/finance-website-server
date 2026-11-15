@@ -39,6 +39,22 @@
                     <p>Returns the picture for an asset class, using the img_name from the list above.</p>
                     <a href="images/real-estate.jpg" class="btn">Example: Real Estate Picture</a>
                 </section>
+
+                <section class="request">
+                    <div class="request-top">
+                        <span class="method post">POST</span>
+                        <code>/api/assets</code>
+                    </div>
+                    <p>Adds a new asset class. Send it as form data with a picture in the img field. Every field is checked before the asset is added:</p>
+                    <ul>
+                        <li><strong>name</strong> and <strong>category</strong>: 3 to 40 characters</li>
+                        <li><strong>risk</strong> and <strong>liquidity</strong>: 3 to 20 characters</li>
+                        <li><strong>typical_return</strong>: 2 to 20 characters</li>
+                        <li><strong>description</strong>: 10 to 300 characters</li>
+                        <li><strong>img</strong>: a picture file (required)</li>
+                    </ul>
+                    <a href="https://ngauvin.github.io/finance-website-react/#/alternatives" class="btn">Try It on the Alternatives Page</a>
+                </section>
             </div>
         </main>
 

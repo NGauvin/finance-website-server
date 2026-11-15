@@ -108,6 +108,22 @@ h2 {
     font-weight: 700;
 }
 
+.method.post {
+    background-color: #fdf3dc;
+    color: #8a6a1f;
+}
+
+.request ul {
+    color: var(--muted-text);
+    font-size: 0.9rem;
+    padding-left: 1.25rem;
+    margin: 0 0 1.25rem;
+}
+
+.request li {
+    margin-bottom: 0.25rem;
+}
+
 code {
     font-size: 1rem;
     font-weight: 600;
