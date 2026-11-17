@@ -137,6 +137,50 @@ app.post("/api/assets", upload.single("img"), (req, res) => {
     res.status(200).send(asset);
 });
 
+app.put("/api/assets/:id", upload.single("img"), (req, res) => {
+    const asset = findAsset(req.params.id);
+
+    if (!asset) {
+        res.status(404).send("The asset class with that id was not found");
+        return;
+    }
+
+    const result = validateAsset(req.body);
+
+    if (result.error) {
+        console.log("Error in validation");
+        res.status(400).send(result.error.details[0].message);
+        return;
+    }
+
+    asset.name = req.body.name;
+    asset.category = req.body.category;
+    asset.risk = req.body.risk;
+    asset.typical_return = req.body.typical_return;
+    asset.liquidity = req.body.liquidity;
+    asset.description = req.body.description;
+
+    //only change the picture if a new one was uploaded
+    if (req.file) {
+        asset.img_name = req.file.filename;
+    }
+
+    res.status(200).send(asset);
+});
+
+//returns the asset with the given id, or undefined if there isn't one
+const findAsset = (id) => {
+    let foundAsset;
+
+    assets.forEach((asset) => {
+        if (asset._id === parseInt(id)) {
+            foundAsset = asset;
+        }
+    });
+
+    return foundAsset;
+};
+
 const validateAsset = (asset) => {
     const schema = Joi.object({
         _id: Joi.allow(""),
