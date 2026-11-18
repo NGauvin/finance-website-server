@@ -121,8 +121,16 @@ app.post("/api/assets", upload.single("img"), (req, res) => {
         return;
     }
 
+    //new id is one more than the biggest id in the list
+    let newId = 1;
+    assets.forEach((asset) => {
+        if (asset._id >= newId) {
+            newId = asset._id + 1;
+        }
+    });
+
     const asset = {
-        _id: assets.length + 1,
+        _id: newId,
         name: req.body.name,
         img_name: req.file.filename,
         category: req.body.category,
@@ -164,6 +172,20 @@ app.put("/api/assets/:id", upload.single("img"), (req, res) => {
     if (req.file) {
         asset.img_name = req.file.filename;
     }
+
+    res.status(200).send(asset);
+});
+
+app.delete("/api/assets/:id", (req, res) => {
+    const asset = findAsset(req.params.id);
+
+    if (!asset) {
+        res.status(404).send("The asset class with that id was not found");
+        return;
+    }
+
+    const index = assets.indexOf(asset);
+    assets.splice(index, 1);
 
     res.status(200).send(asset);
 });

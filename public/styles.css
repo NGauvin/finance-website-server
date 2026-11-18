@@ -118,6 +118,11 @@ h2 {
     color: #24518c;
 }
 
+.method.delete {
+    background-color: #fbe3e3;
+    color: #9b2c2c;
+}
+
 .request ul {
     color: var(--muted-text);
     font-size: 0.9rem;
